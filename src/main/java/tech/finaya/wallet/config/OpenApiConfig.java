@@ -1,4 +1,4 @@
-package tech.finaya.wallet.configuration;
+package tech.finaya.wallet.config;
 
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
