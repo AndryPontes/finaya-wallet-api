@@ -34,3 +34,17 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
+
+logging:
+  level:
+    root: INFO
+    tech:
+      finaya: 
+        wallet: DEBUG
+    org:
+      springframework:
+        web: WARN
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 30

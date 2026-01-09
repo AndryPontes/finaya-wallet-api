@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;  
 
 import tech.finaya.wallet.adapter.inbounds.dto.requests.CreateUserRequest;
 import tech.finaya.wallet.adapter.inbounds.dto.responses.CreateUserResponse;
@@ -18,11 +19,18 @@ import tech.finaya.wallet.infrastructure.mappers.CreateUserMapper;
 public class UserController {
     
     @Autowired
+    private Logger log;
+
+    @Autowired
     public CreateUser createUser;
 
     @PostMapping
     public ResponseEntity<CreateUserResponse> create(@RequestBody CreateUserRequest request) {
+        log.info("Creating a user with name [{}]", request.name());
+
         User user = createUser.execute(CreateUserMapper.toEntity(request));
+
+        log.info("User created with name [{}]", user.getName());
 
         return ResponseEntity.ok(CreateUserMapper.toResponse(user));
     }

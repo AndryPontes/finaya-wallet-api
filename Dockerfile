@@ -31,7 +31,9 @@ WORKDIR /app
 
 COPY --from=builder /app/build/libs/*.jar app.jar
 
-RUN chown "$USERNAME":"$USERNAME" /app/app.jar
+RUN mkdir -p /app/logs && \
+    chown -R "$USERNAME":"$USERNAME" /app/logs && \
+    chown "$USERNAME":"$USERNAME" /app/app.jar
 
 USER $USERNAME
 
