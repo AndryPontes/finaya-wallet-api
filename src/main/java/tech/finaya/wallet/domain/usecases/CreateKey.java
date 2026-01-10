@@ -1,6 +1,5 @@
 package tech.finaya.wallet.domain.usecases;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,9 @@ public class CreateKey {
     public KeyRepository keyRepository;
 
     public Key execute(UUID walletId, Key key) {
-        Optional<Wallet> walletOptional = walletRepository.findByWalletId(walletId);
-
-        Wallet wallet = walletOptional.orElseThrow(() -> new WalletDoesntExistException(walletId));
+        Wallet wallet = walletRepository
+            .findByWalletId(walletId)
+            .orElseThrow(() -> new WalletDoesntExistException(walletId));
 
         if (wallet.isTypeKeyExist(key.getType())) {
             throw new WalletTypeKeyAlreadyExistException(key.getType().name());
