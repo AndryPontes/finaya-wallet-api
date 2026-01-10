@@ -29,7 +29,7 @@ public class UserController implements UserAPI {
     public ResponseEntity<CreateUserResponse> create(@RequestBody CreateUserRequest request) {
         log.info("Creating a user with name [{}] and CPF [{}]...", request.name(), request.cpf());
 
-        User user = createUser.execute(CreateUserMapper.toEntity(request));
+        User user = createUser.execute(request);
 
         log.info("User created with name [{}] and CPF [{}] and wallet [{}]...", user.getName(), user.getCpf(), user.getWallet().getWalletId());
 

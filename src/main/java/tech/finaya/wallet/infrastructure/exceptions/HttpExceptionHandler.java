@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import tech.finaya.wallet.domain.exceptions.AmountIsInvalidException;
 import tech.finaya.wallet.domain.exceptions.WalletDoesntExistException;
 import tech.finaya.wallet.domain.exceptions.WalletKeyAlreadyExistException;
 import tech.finaya.wallet.domain.exceptions.WalletTypeKeyAlreadyExistException;
@@ -38,7 +39,8 @@ public class HttpExceptionHandler {
     @ExceptionHandler({
         KeyTypeInvalidException.class,
         WalletTypeKeyAlreadyExistException.class,
-        WalletKeyAlreadyExistException.class
+        WalletKeyAlreadyExistException.class,
+        AmountIsInvalidException.class
     })
     public ResponseEntity<ApiError> handleBadRequest(
             Exception ex,

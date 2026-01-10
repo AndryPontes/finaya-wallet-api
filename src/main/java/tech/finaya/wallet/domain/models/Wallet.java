@@ -16,6 +16,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+import tech.finaya.wallet.domain.exceptions.AmountIsInvalidException;
 import tech.finaya.wallet.domain.models.enums.KeyType;
 
 @Entity
@@ -90,6 +91,18 @@ public class Wallet {
 
     public boolean isTypeKeyExist(KeyType type) {
         return this.keys.stream().anyMatch(key -> key.getType() == type);
+    }
+
+    public void deposit(BigDecimal amount) {
+        if (amount == null) {
+            throw new AmountIsInvalidException(String.format("Amount [%s] cannot be null", amount));
+        }
+
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new AmountIsInvalidException(String.format("Amount [%s] must be greater than zero", amount));
+        }
+
+        this.balance = this.balance.add(amount);
     }
 
 }
