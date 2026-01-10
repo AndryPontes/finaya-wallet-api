@@ -1,6 +1,6 @@
 package tech.finaya.wallet.domain.models;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -32,21 +32,41 @@ public class User {
     @Column(name = "name", nullable = false, unique = false, length = 50)
     private String name;
 
+    @Column(name = "cpf", nullable = false, unique = true, length = 11)
+    private String cpf;
+
     @Column(name = "created_at", nullable = false)
-    private LocalDate createdAt = LocalDate.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
 
     protected User() {}
 
-    public User(String name) {
+    public User(String name, String cpf) {
         this.name = name;
+        this.cpf = cpf;
         this.wallet = new Wallet(this);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
     
     public String getName() {
         return name;
+    }
+
+    public String getCpf() {
+        return cpf;
     }
 
     public Boolean isActive() {

@@ -1,10 +1,9 @@
 package tech.finaya.wallet.adapter.inbounds.dto.responses;
 
-import java.util.UUID;
-
-public record CreateUserResponse(
+public record UserResponse(
+    Long id,
     String name,
     String cpf,
     Boolean isActive,
-    UUID walletId
+    WalletResponse wallet
 ) {}

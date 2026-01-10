@@ -1,5 +1,8 @@
 package tech.finaya.wallet.adapter.outbounds.persistence.adapters;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +17,13 @@ public class WalletRepositoryAdapter implements WalletRepository {
     private WalletJpaRepository repository;
 
     @Override
-    public Wallet create(Wallet wallet) {
-        return repository.save(wallet);
+    public Optional<Wallet> findByWalletId(UUID walletId) {
+        return repository.findByWalletId(walletId);
+    }
+
+    @Override
+    public Wallet save(Wallet wallet) {
+        return repository.saveAndFlush(wallet);
     }
 
 }

@@ -25,10 +25,19 @@ public class BalanceHistory {
     @JoinColumn(name = "wallet_id", nullable = false)
     private Wallet wallet;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transaction_id", nullable = false)
+    private Transaction transaction;
+
+    @Column(name="amount", nullable = false, precision = 20, scale = 2)
+    private BigDecimal amount;
+
     @Column(name = "balance", nullable = false, precision = 20, scale = 2)
-    private BigDecimal balance;
+    private BigDecimal balanceAfter;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    protected BalanceHistory() {}
 
 }

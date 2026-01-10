@@ -1,5 +1,7 @@
 package tech.finaya.wallet.adapter.outbounds.persistence.adapters;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +17,12 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public User create(User user) {
-        return repository.save(user);
+        return repository.saveAndFlush(user);
+    }
+
+    @Override
+    public List<User> FindAll() {
+        return repository.findAll();
     }
 
 }

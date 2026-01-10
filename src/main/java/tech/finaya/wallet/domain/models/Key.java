@@ -32,4 +32,31 @@ public class Key {
     @JoinColumn(name = "wallet_id", nullable = false)
     private Wallet wallet;
 
+    protected Key() {}
+
+    public Key(KeyType type, String value) {
+        this.type = type;
+        this.value = value;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public KeyType getType() {
+        return this.type;
+    }
+
+    public String getValue() {
+        return this.value;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
+
 }

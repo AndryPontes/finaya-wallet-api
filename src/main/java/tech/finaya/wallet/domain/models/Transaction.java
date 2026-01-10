@@ -31,9 +31,16 @@ public class Transaction {
     @Column(name = "end_to_end_id", nullable = false, unique = true)
     private String endToEndId;
 
+    @Column(name = "idempotency_key")
+    private String idempotencyKey;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "wallet_id", nullable = false)
-    private Wallet wallet;
+    @JoinColumn(name = "from_wallet_id", nullable = false)
+    private Wallet fromWallet;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "to_wallet_id", nullable = false)
+    private Wallet toWallet;
 
     @Column(name = "amount", nullable = false, precision = 20, scale = 2)
     private BigDecimal amount;
@@ -48,11 +55,45 @@ public class Transaction {
     @Transient
     private TransactionState state = new PendingState();
 
+    protected Transaction() {}
+
     // Toda vez que o objeto for carregado ou persistido no banco esse metodo sera disparado atualizando o state
     @PostLoad
     @PostPersist
     private void initState() {
         this.state = TransactionStateFactory.build(this.status);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getEndToEndId() {
+        return endToEndId;
+    }
+
+    public String getIdempotencyKey() {
+        return idempotencyKey;
+    }
+
+    public Wallet getFromWallet() {
+        return fromWallet;
+    }
+
+    public Wallet getToWallet() {
+        return toWallet;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public TransactionStatus getStatus() {
+        return status;
     }
 
     public void setState(TransactionState state) {

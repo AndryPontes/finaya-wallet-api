@@ -2,14 +2,16 @@
 
 Finaya Digital Wallet.
 
+<hr/>
+
 | Technology | Version |
 |   :---:    |  :---:  |
 | Java       | 21      |
-| Spring     | 4.0.1   |
+| Spring     | 3.5.9   |
 | PostgreSQL | 15      |
 | Docker     | >29     |
 
-### Project Structure
+## Project Structure
 ```
 src/
 └─ main/
@@ -36,8 +38,11 @@ src/
          └─ infrastructure/
              └─ mappers/                         # Mapping classes (DTO ↔ Entity)
 ```
+## MER
 
-### How to run locally?
+![mer](./docs/mer.png)
+
+## How to run locally?
 
 *Linux and MAC:*
 1. Open a terminal in the application's root directory and run: `make up`.
