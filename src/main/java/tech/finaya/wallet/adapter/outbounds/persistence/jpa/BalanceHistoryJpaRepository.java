@@ -17,7 +17,7 @@ public interface BalanceHistoryJpaRepository extends JpaRepository<Wallet, Long>
 
     @Query(
         "SELECT b.balanceAfter FROM BalanceHistory b " +
-        "WHERE b.wallet.id = :walletId AND b.createdAt <= :at " +
+        "WHERE b.wallet.walletId = :walletId AND b.createdAt <= :at " +
         "ORDER BY b.createdAt DESC"
     )
     Optional<BigDecimal> findLastBalanceBefore(

@@ -1,9 +1,7 @@
 package tech.finaya.wallet.domain.models;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -42,10 +40,10 @@ public class Wallet {
     private Set<Key> keys = new HashSet<>();
 
     @OneToMany(mappedBy = "fromWallet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Transaction> fromWalletTransactions = new ArrayList<>();
+    private Set<Transaction> fromWalletTransactions = new HashSet<>();
 
     @OneToMany(mappedBy = "toWallet", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Transaction> toWalletTransactions = new ArrayList<>();
+    private Set<Transaction> toWalletTransactions = new HashSet<>();
 
     @Version
     @Column(name = "version", nullable = false)
@@ -77,11 +75,11 @@ public class Wallet {
         return keys;
     }
 
-    public List<Transaction> getFromWalletTransactions() {
+    public Set<Transaction> getFromWalletTransactions() {
         return fromWalletTransactions;
     }
 
-    public List<Transaction> getToWalletTransactions() {
+    public Set<Transaction> getToWalletTransactions() {
         return toWalletTransactions;
     }
 

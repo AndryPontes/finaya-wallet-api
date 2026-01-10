@@ -11,7 +11,7 @@ import tech.finaya.wallet.domain.models.User;
 @Repository
 public interface UserJpaRepository extends JpaRepository<User, Long> {
 
-    @EntityGraph(attributePaths = {"wallet", "wallet.keys", "wallet.transactions"})
+    @EntityGraph(attributePaths = {"wallet", "wallet.keys", "wallet.fromWalletTransactions", "wallet.toWalletTransactions"})
     List<User> findAll();
 
 }
