@@ -4,8 +4,8 @@
 
 - [x] Criar Conta/Carteira: criação de carteira para um usuário.
 - [x] Registrar Chave Pix: vincular uma chave Pix única à carteira (e.g.,email/telefone/EVP).​
-- [ ] Consultar Saldo: saldo atual da carteira.​
-- [ ] Saldo Histórico: saldo em um timestamp passado.​
+- [x] Consultar Saldo: saldo atual da carteira.​
+- [x] Saldo Histórico: saldo em um timestamp passado.​
 - [ ] Depósito: crédito na carteira (simula entrada de recursos).​
 - [ ] Saque: débito na carteira (valida saldo).​
 - [ ] Transferência Pix (interna): enviar Pix para outra carteira usando chave Pix (gera endToEndId).​
@@ -30,8 +30,8 @@
 
 - [x] POST /wallets → cria carteira.​ (/api/users → ao criar um usuario uma carteira e criada automaticamente)
 - [x] POST /wallets/{id}/pix-keys → registra chave Pix.​ (/api/wallets/{wallet_id}/key)
-- [ ] GET /wallets/{id}/balance → saldo atual.​
-- [ ] GET /wallets/{id}/balance?at=2025-10-09T15:00:00Z → saldo histórico.​
+- [x] GET /wallets/{id}/balance → saldo atual.​ (/api/wallets/{wallet_id}/balance)
+- [x] GET /wallets/{id}/balance?at=2025-10-09T15:00:00Z → saldo histórico.​ (/api/wallets/{wallet_id}/balance?at=2000-10-31T01%3A30%3A00.000-05%3A00)
 - [ ] POST /wallets/{id}/deposit → depósito.​
 - [ ] POST /wallets/{id}/withdraw → saque.​
 - [ ] POST /pix/transfers​
