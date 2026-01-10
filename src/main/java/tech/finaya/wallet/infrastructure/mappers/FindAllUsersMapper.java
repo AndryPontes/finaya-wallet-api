@@ -27,7 +27,11 @@ public class FindAllUsersMapper {
                 .map(FindAllUsersMapper::toKeyResponse)
                 .collect(Collectors.toSet());
 
-            List<TransactionResponse> transactions = wallet.getTransactions().stream()
+            List<TransactionResponse> fromWalletTransactions = wallet.getFromWalletTransactions().stream()
+                .map(FindAllUsersMapper::toTransactionResponse)
+                .toList();
+
+            List<TransactionResponse> toWalletTransactions = wallet.getToWalletTransactions().stream()
                 .map(FindAllUsersMapper::toTransactionResponse)
                 .toList();
 
@@ -36,7 +40,8 @@ public class FindAllUsersMapper {
                 wallet.getWalletId(),
                 wallet.getBalance(),
                 keys,
-                transactions
+                fromWalletTransactions,
+                toWalletTransactions
             );
         }
 

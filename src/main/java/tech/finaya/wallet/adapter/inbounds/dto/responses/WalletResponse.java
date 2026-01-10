@@ -10,5 +10,6 @@ public record WalletResponse(
     UUID walletId,
     BigDecimal balance,
     Set<KeyResponse> keys,
-    List<TransactionResponse> transactions
+    List<TransactionResponse> fromWalletTransactions,
+    List<TransactionResponse> toWalletTransactions
 ) {}

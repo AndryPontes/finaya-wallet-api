@@ -77,8 +77,12 @@ public class Wallet {
         return keys;
     }
 
-    public List<Transaction> getTransactions() {
-        return transactions;
+    public List<Transaction> getFromWalletTransactions() {
+        return fromWalletTransactions;
+    }
+
+    public List<Transaction> getToWalletTransactions() {
+        return toWalletTransactions;
     }
 
     public void addKey(Key key) {
