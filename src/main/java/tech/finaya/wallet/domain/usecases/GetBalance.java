@@ -33,7 +33,7 @@ public class GetBalance {
 
     public BigDecimal executeAt(UUID walletId, LocalDateTime at) {
         return balanceHistoryRepository
-            .findLastBalanceBefore(walletId, at)
+            .findLastBalanceAfter(walletId, at)
             .orElse(BigDecimal.ZERO);
     }
 

@@ -6,13 +6,16 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 import tech.finaya.wallet.adapter.inbounds.dto.requests.CreateKeyRequest;
 import tech.finaya.wallet.adapter.inbounds.dto.requests.DepositRequest;
+import tech.finaya.wallet.adapter.inbounds.dto.requests.WithdrawRequest;
 import tech.finaya.wallet.adapter.inbounds.dto.responses.CreateKeyResponse;
 import tech.finaya.wallet.adapter.inbounds.dto.responses.DepositResponse;
 import tech.finaya.wallet.adapter.inbounds.dto.responses.GetBalanceResponse;
+import tech.finaya.wallet.adapter.inbounds.dto.responses.WithdrawResponse;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
@@ -45,6 +48,18 @@ public interface WalletAPI {
     )
     public ResponseEntity<DepositResponse> deposit(
         @PathVariable("wallet_id") UUID walletId,
-        @RequestBody DepositRequest request
+        @RequestBody DepositRequest request,
+        @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey
     );
+
+    @Operation(
+        summary = "Withdraw credit",
+        description = "Withdraw credit in wallet."
+    )
+    public ResponseEntity<WithdrawResponse> withdraw(
+        @PathVariable("wallet_id") UUID walletId,
+        @RequestBody WithdrawRequest request,
+        @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey
+    );
+
 }

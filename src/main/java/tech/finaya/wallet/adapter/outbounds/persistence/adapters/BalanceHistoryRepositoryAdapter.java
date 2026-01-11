@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import tech.finaya.wallet.adapter.outbounds.persistence.jpa.BalanceHistoryJpaRepository;
@@ -18,8 +19,14 @@ public class BalanceHistoryRepositoryAdapter implements BalanceHistoryRepository
     private BalanceHistoryJpaRepository repository;
 
     @Override
-    public Optional<BigDecimal> findLastBalanceBefore(UUID walletId, LocalDateTime at) {
-        return repository.findLastBalanceBefore(walletId, at);
+    public Optional<BigDecimal> findLastBalanceAfter(UUID walletId, LocalDateTime at) {
+        return Optional.ofNullable(
+            repository.findAllBalanceAfter(
+                walletId, 
+                at, 
+                PageRequest.of(0, 1)
+            ).get(0)
+        );
     }
 
 }

@@ -32,12 +32,39 @@ public class BalanceHistory {
     @Column(name="amount", nullable = false, precision = 20, scale = 2)
     private BigDecimal amount;
 
-    @Column(name = "balance", nullable = false, precision = 20, scale = 2)
+    @Column(name = "balance_after", nullable = false, precision = 20, scale = 2)
     private BigDecimal balanceAfter;
+
+    @Column(name = "balance_before", nullable = false, precision = 20, scale = 2)
+    private BigDecimal balanceBefore;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     protected BalanceHistory() {}
+
+    private BalanceHistory(
+        Wallet wallet,
+        Transaction transaction,
+        BigDecimal amount,
+        BigDecimal balanceBefore,
+        BigDecimal balanceAfter
+    ) {
+        this.wallet = wallet;
+        this.transaction = transaction;
+        this.amount = amount;
+        this.balanceBefore = balanceBefore;
+        this.balanceAfter = balanceAfter;
+    }
+
+    public static BalanceHistory create(
+        Wallet wallet,
+        Transaction transaction,
+        BigDecimal amount,
+        BigDecimal balanceBefore,
+        BigDecimal balanceAfter
+    ) {
+        return new BalanceHistory(wallet, transaction, amount, balanceBefore, balanceAfter);
+    }
 
 }

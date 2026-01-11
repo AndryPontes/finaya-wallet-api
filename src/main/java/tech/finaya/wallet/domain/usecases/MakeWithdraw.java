@@ -4,19 +4,19 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import tech.finaya.wallet.adapter.inbounds.dto.requests.DepositRequest;
+import tech.finaya.wallet.adapter.inbounds.dto.requests.WithdrawRequest;
 import tech.finaya.wallet.adapter.outbounds.persistence.repositories.TransactionRepository;
 import tech.finaya.wallet.adapter.outbounds.persistence.repositories.WalletRepository;
 import tech.finaya.wallet.domain.exceptions.WalletDoesntExistException;
 import tech.finaya.wallet.domain.models.Wallet;
 
 @Service
-public class MakeDeposit {
+public class MakeWithdraw {
     
     @Autowired
     public WalletRepository walletRepository;
@@ -30,7 +30,7 @@ public class MakeDeposit {
         backoff = @Backoff(delay = 100)
     )
     @Transactional
-    public Wallet execute(UUID walletId, String idempotencyKey, DepositRequest request) {
+    public Wallet execute(UUID walletId, String idempotencyKey, WithdrawRequest request) {
         Wallet wallet = walletRepository
             .findByWalletId(walletId)
             .orElseThrow(() -> new WalletDoesntExistException(walletId));
@@ -39,7 +39,7 @@ public class MakeDeposit {
             return wallet;
         }
 
-        wallet.deposit(idempotencyKey, request.amount());        
+        wallet.withdraw(idempotencyKey, request.amount());        
 
         return walletRepository.save(wallet);
     }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,17 +20,21 @@ import org.springframework.web.bind.annotation.RestController;
 import tech.finaya.wallet.adapter.inbounds.controllers.api.WalletAPI;
 import tech.finaya.wallet.adapter.inbounds.dto.requests.CreateKeyRequest;
 import tech.finaya.wallet.adapter.inbounds.dto.requests.DepositRequest;
+import tech.finaya.wallet.adapter.inbounds.dto.requests.WithdrawRequest;
 import tech.finaya.wallet.adapter.inbounds.dto.responses.CreateKeyResponse;
 import tech.finaya.wallet.adapter.inbounds.dto.responses.DepositResponse;
 import tech.finaya.wallet.adapter.inbounds.dto.responses.GetBalanceResponse;
+import tech.finaya.wallet.adapter.inbounds.dto.responses.WithdrawResponse;
 import tech.finaya.wallet.domain.models.Key;
 import tech.finaya.wallet.domain.models.Wallet;
 import tech.finaya.wallet.domain.usecases.CreateKey;
 import tech.finaya.wallet.domain.usecases.GetBalance;
 import tech.finaya.wallet.domain.usecases.MakeDeposit;
+import tech.finaya.wallet.domain.usecases.MakeWithdraw;
 import tech.finaya.wallet.infrastructure.mappers.CreateKeyMapper;
 import tech.finaya.wallet.infrastructure.mappers.GetBalanceMapper;
 import tech.finaya.wallet.infrastructure.mappers.MakeDepositMapper;
+import tech.finaya.wallet.infrastructure.mappers.MakeWithdrawMapper;
 
 @RestController
 @RequestMapping("/api/wallets")
@@ -46,6 +51,9 @@ public class WalletController implements WalletAPI {
 
     @Autowired
     public MakeDeposit makeDeposit;
+
+    @Autowired
+    public MakeWithdraw makeWithdraw;
 
     @PostMapping("/{wallet_id}/key")
     public ResponseEntity<CreateKeyResponse> createKey(
@@ -80,15 +88,31 @@ public class WalletController implements WalletAPI {
     @PostMapping("/{wallet_id}/deposit")    
     public ResponseEntity<DepositResponse> deposit(
         @PathVariable("wallet_id") UUID walletId, 
-        @RequestBody DepositRequest request
+        @RequestBody DepositRequest request,
+        @RequestHeader(value = "Idempotency-Key", required = true) String idempotencyKey
     ) {
-        log.info("Depositing funds [{}] into wallet [{}]...", request.amount(), walletId);
+        log.info("Depositing funds [{}] into wallet [{}] with idempotency key [{}]...", request.amount(), walletId, idempotencyKey);
 
-        Wallet wallet = makeDeposit.execute(walletId, request);
+        Wallet wallet = makeDeposit.execute(walletId, idempotencyKey, request);
 
-        log.info("Balance [{}] deposited in wallet [{}]...", wallet.getBalance(), wallet.getWalletId());
+        log.info("Balance [{}] deposited in wallet [{}]...", request.amount(), wallet.getWalletId());
 
-        return ResponseEntity.ok(MakeDepositMapper.toResponse(wallet));
+        return ResponseEntity.ok(MakeDepositMapper.toResponse(wallet.getWalletId(), request.amount()));
+    }
+
+    @PostMapping("/{wallet_id}/withdraw")    
+    public ResponseEntity<WithdrawResponse> withdraw(
+        @PathVariable("wallet_id") UUID walletId, 
+        @RequestBody WithdrawRequest request,
+        @RequestHeader(value = "Idempotency-Key", required = true) String idempotencyKey
+    ) {
+        log.info("Withdrawing funds [{}] from the wallet [{}] with idempotency key [{}]...", request.amount(), walletId, idempotencyKey);
+
+        Wallet wallet = makeWithdraw.execute(walletId, idempotencyKey, request);
+
+        log.info("Balance [{}] withdrawn from the wallet [{}]...", request.amount(), wallet.getWalletId());
+
+        return ResponseEntity.ok(MakeWithdrawMapper.toResponse(wallet.getWalletId(), request.amount()));
     }
 
 }

@@ -17,7 +17,9 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import tech.finaya.wallet.domain.exceptions.AmountIsInvalidException;
+import tech.finaya.wallet.domain.exceptions.InsufficientBalanceException;
 import tech.finaya.wallet.domain.models.enums.KeyType;
+import tech.finaya.wallet.domain.models.enums.TransactionType;
 
 @Entity
 @Table(name = "wallets")
@@ -45,6 +47,9 @@ public class Wallet {
 
     @OneToMany(mappedBy = "toWallet", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Transaction> toWalletTransactions = new HashSet<>();
+    
+    @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<BalanceHistory> balanceHistory = new HashSet<>();
 
     @Version
     @Column(name = "version", nullable = false)
@@ -93,7 +98,55 @@ public class Wallet {
         return this.keys.stream().anyMatch(key -> key.getType() == type);
     }
 
-    public void deposit(BigDecimal amount) {
+    public Transaction deposit(String idempotencyKey, BigDecimal amount) {
+        validateAmount(amount);
+
+        BigDecimal balanceBefore = this.getBalance();
+
+        this.balance = this.balance.add(amount);
+
+        Transaction transaction = Transaction.create(idempotencyKey, this, amount, TransactionType.DEPOSIT);
+        transaction.confirm();
+
+        this.toWalletTransactions.add(transaction);
+
+        createBalanceHistory(transaction, amount, balanceBefore);
+
+        return transaction;
+    }
+
+    public Transaction withdraw(String idempotencyKey, BigDecimal amount) {
+        validateAmount(amount);
+        validateAmountForWithdraw(amount);
+
+        BigDecimal balanceBefore = this.getBalance();
+
+        this.balance = this.balance.subtract(amount);
+
+        Transaction transaction = Transaction.create(idempotencyKey, this, amount, TransactionType.WITHDRAW);
+        transaction.confirm();
+        
+        this.fromWalletTransactions.add(transaction);
+
+        createBalanceHistory(transaction, amount, balanceBefore);
+
+        return transaction;
+    }
+
+    private void validateAmountForWithdraw(BigDecimal amount) {
+        if (this.balance.compareTo(amount) < 0) {
+            throw new InsufficientBalanceException(
+                String.format("Insufficient balance: balance [%s], withdrawal [%s]", this.balance, amount)
+            );
+        }
+    }
+
+    private void createBalanceHistory(Transaction transaction, BigDecimal amount, BigDecimal balanceBefore) {
+        BalanceHistory balanceHistory = BalanceHistory.create(this, transaction, amount, balanceBefore, this.balance);
+        this.balanceHistory.add(balanceHistory);
+    }
+
+    private void validateAmount(BigDecimal amount) {
         if (amount == null) {
             throw new AmountIsInvalidException(String.format("Amount [%s] cannot be null", amount));
         }
@@ -101,8 +154,6 @@ public class Wallet {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new AmountIsInvalidException(String.format("Amount [%s] must be greater than zero", amount));
         }
-
-        this.balance = this.balance.add(amount);
     }
 
 }

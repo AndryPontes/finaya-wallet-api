@@ -17,7 +17,9 @@ import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import tech.finaya.wallet.domain.models.builders.TransactionBuilder;
 import tech.finaya.wallet.domain.models.enums.TransactionStatus;
+import tech.finaya.wallet.domain.models.enums.TransactionType;
 import tech.finaya.wallet.domain.models.factories.TransactionStateFactory;
 
 @Entity
@@ -31,15 +33,15 @@ public class Transaction {
     @Column(name = "end_to_end_id", nullable = false, unique = true)
     private String endToEndId;
 
-    @Column(name = "idempotency_key")
+    @Column(name = "idempotency_key", nullable = true, unique = true)
     private String idempotencyKey;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "from_wallet_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "from_wallet_id", nullable = true)
     private Wallet fromWallet;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "to_wallet_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "to_wallet_id", nullable = true)
     private Wallet toWallet;
 
     @Column(name = "amount", nullable = false, precision = 20, scale = 2)
@@ -52,10 +54,14 @@ public class Transaction {
     @Column(name = "status", nullable = false)
     private TransactionStatus status = TransactionStatus.PENDING;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
+    private TransactionType type;
+
     @Transient
     private TransactionState state = new PendingState();
 
-    protected Transaction() {}
+    public Transaction() {}
 
     // Toda vez que o objeto for carregado ou persistido no banco esse metodo sera disparado atualizando o state
     @PostLoad
@@ -100,8 +106,32 @@ public class Transaction {
         this.state = state;
     }
 
-    protected void setStatus(TransactionStatus status) {
+    public void setStatus(TransactionStatus status) {
         this.status = status;
+    }
+
+    public void setFromWallet(Wallet fromWallet) {
+        this.fromWallet = fromWallet;
+    }
+
+    public void setToWallet(Wallet toWallet) {
+        this.toWallet = toWallet;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public void setEndToEndId(String endToEndId) {
+        this.endToEndId = endToEndId;
+    }
+
+    public void setIdempotencyKey(String idempotencyKey) {
+        this.idempotencyKey = idempotencyKey;
+    }
+
+    public void setType(TransactionType type) {
+        this.type = type;
     }
 
     public void confirm() throws IllegalArgumentException {
@@ -110,6 +140,21 @@ public class Transaction {
 
     public void reject() throws IllegalArgumentException {
         state.reject(this);
+    }
+
+    protected static Transaction create(String idempotencyKey, Wallet wallet, BigDecimal amount, TransactionType type) {
+        TransactionBuilder builder = new TransactionBuilder()
+            .type(type)
+            .amount(amount)
+            .idempotencyKey(idempotencyKey);
+
+        if (type == TransactionType.WITHDRAW) {
+            builder.fromWallet(wallet);
+        } else {
+            builder.toWallet(wallet);
+        }
+
+        return builder.build();
     }
 
 }

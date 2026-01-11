@@ -7,6 +7,6 @@ import java.util.UUID;
 
 public interface BalanceHistoryRepository {
 
-    Optional<BigDecimal> findLastBalanceBefore(UUID walletId, LocalDateTime LocalDateTime);
+    Optional<BigDecimal> findLastBalanceAfter(UUID walletId, LocalDateTime LocalDateTime);
 
 }

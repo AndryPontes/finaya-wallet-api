@@ -3,12 +3,14 @@ package tech.finaya.wallet.infrastructure.exceptions;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import tech.finaya.wallet.domain.exceptions.AmountIsInvalidException;
+import tech.finaya.wallet.domain.exceptions.InsufficientBalanceException;
 import tech.finaya.wallet.domain.exceptions.WalletDoesntExistException;
 import tech.finaya.wallet.domain.exceptions.WalletKeyAlreadyExistException;
 import tech.finaya.wallet.domain.exceptions.WalletTypeKeyAlreadyExistException;
@@ -40,7 +42,9 @@ public class HttpExceptionHandler {
         KeyTypeInvalidException.class,
         WalletTypeKeyAlreadyExistException.class,
         WalletKeyAlreadyExistException.class,
-        AmountIsInvalidException.class
+        AmountIsInvalidException.class,
+        InsufficientBalanceException.class,
+        OptimisticLockingFailureException.class
     })
     public ResponseEntity<ApiError> handleBadRequest(
             Exception ex,
