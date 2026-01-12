@@ -17,7 +17,6 @@ import jakarta.persistence.PostLoad;
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-import tech.finaya.wallet.domain.models.builders.TransactionBuilder;
 import tech.finaya.wallet.domain.models.enums.TransactionStatus;
 import tech.finaya.wallet.domain.models.enums.TransactionType;
 import tech.finaya.wallet.domain.models.factories.TransactionStateFactory;
@@ -140,24 +139,6 @@ public class Transaction {
 
     public void reject() throws IllegalArgumentException {
         state.reject(this);
-    }
-
-    protected static Transaction create(String idempotencyKey, Wallet fromWallet, Wallet toWallet, BigDecimal amount, TransactionType type) {
-        TransactionBuilder builder = new TransactionBuilder()
-            .type(type)
-            .amount(amount)
-            .idempotencyKey(idempotencyKey);
-
-        if (type == TransactionType.WITHDRAW) {
-            builder.fromWallet(fromWallet);
-        } else if (type == TransactionType.DEPOSIT) {
-            builder.toWallet(toWallet);
-        } else if (type == TransactionType.PIX) {
-            builder.fromWallet(fromWallet);
-            builder.toWallet(toWallet);
-        }
-
-        return builder.build();
     }
 
 }

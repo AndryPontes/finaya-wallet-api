@@ -41,30 +41,26 @@ public class BalanceHistory {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    protected BalanceHistory() {}
+    public BalanceHistory() {}
 
-    private BalanceHistory(
-        Wallet wallet,
-        Transaction transaction,
-        BigDecimal amount,
-        BigDecimal balanceBefore,
-        BigDecimal balanceAfter
-    ) {
+    public void setWallet(Wallet wallet) {
         this.wallet = wallet;
+    }
+
+    public void setTransaction(Transaction transaction) {
         this.transaction = transaction;
+    }
+
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
-        this.balanceBefore = balanceBefore;
+    }
+
+    public void setBalanceAfter(BigDecimal balanceAfter) {
         this.balanceAfter = balanceAfter;
     }
 
-    public static BalanceHistory create(
-        Wallet wallet,
-        Transaction transaction,
-        BigDecimal amount,
-        BigDecimal balanceBefore,
-        BigDecimal balanceAfter
-    ) {
-        return new BalanceHistory(wallet, transaction, amount, balanceBefore, balanceAfter);
+    public void setBalanceBefore(BigDecimal balanceBefore) {
+        this.balanceBefore = balanceBefore;
     }
 
 }
