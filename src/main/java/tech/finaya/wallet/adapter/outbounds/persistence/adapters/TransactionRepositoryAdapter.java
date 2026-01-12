@@ -20,4 +20,9 @@ public class TransactionRepositoryAdapter implements TransactionRepository {
         return repository.findByIdempotencyKey(idempotencyKey);
     }
 
+    @Override
+    public Transaction save(Transaction transaction) {
+        return repository.save(transaction);
+    }
+
 }

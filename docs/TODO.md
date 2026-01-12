@@ -8,7 +8,7 @@
 - [x] Saldo Histórico: saldo em um timestamp passado.​
 - [x] Depósito: crédito na carteira (simula entrada de recursos).​
 - [x] Saque: débito na carteira (valida saldo).​
-- [ ] Transferência Pix (interna): enviar Pix para outra carteira usando chave Pix (gera endToEndId).​
+- [x] Transferência Pix (interna): enviar Pix para outra carteira usando chave Pix (gera endToEndId).​
 - [ ] Webhook Pix (simulado): endpoint que recebe eventos CONFIRMED/REJECTED para um endToEndId. Eventos podem chegar duplicados e fora de ordem.
 
 ### Requisitos Não Funcionais
@@ -34,8 +34,9 @@
 - [x] GET /wallets/{id}/balance?at=2025-10-09T15:00:00Z → saldo histórico.​ (/api/wallets/{wallet_id}/balance?at=2000-10-31T01%3A30%3A00.000-05%3A00)
 - [x] POST /wallets/{id}/deposit → depósito.​ (/api/wallets/{wallet_id}/deposit)
 - [x] POST /wallets/{id}/withdraw → saque.​ ((/api/wallets/{wallet_id}/withdraw))
-- [ ] POST /pix/transfers​
-        Headers: Idempotency-Key: <uuid>​Body: { fromWalletId, toPixKey, amount }​
+- [x] POST /pix/transfers​
+        Headers: Idempotency-Key: <uuid>
+        ​Body: { fromWalletId, toPixKey, amount }​
         Resposta: { endToEndId, status }​
 - [ ] POST /pix/webhook​
         Body: { endToEndId, eventId, eventType, occurredAt }​

@@ -26,4 +26,9 @@ public class WalletRepositoryAdapter implements WalletRepository {
         return repository.saveAndFlush(wallet);
     }
 
+    @Override
+    public Optional<Wallet> findByKey(String key) {
+        return repository.findByKeysValue(key);
+    }
+
 }

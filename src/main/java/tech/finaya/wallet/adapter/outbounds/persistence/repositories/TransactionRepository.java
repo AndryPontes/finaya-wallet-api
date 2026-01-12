@@ -8,4 +8,6 @@ public interface TransactionRepository {
 
     Optional<Transaction> findByIdempotencyKey(String idempotencyKey);
 
+    Transaction save(Transaction transaction);
+
 }

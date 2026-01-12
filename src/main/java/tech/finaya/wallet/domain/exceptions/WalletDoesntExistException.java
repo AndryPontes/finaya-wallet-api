@@ -5,7 +5,7 @@ import java.util.UUID;
 public class WalletDoesntExistException extends RuntimeException {
     
     public WalletDoesntExistException(UUID walletId) {
-        super(String.format("Wallet with wallet id [%s]", walletId));
+        super(String.format("Wallet [%s] doesnt exist", walletId));
     }
 
 }

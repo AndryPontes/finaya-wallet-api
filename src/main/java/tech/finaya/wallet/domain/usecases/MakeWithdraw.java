@@ -13,6 +13,7 @@ import tech.finaya.wallet.adapter.inbounds.dto.requests.WithdrawRequest;
 import tech.finaya.wallet.adapter.outbounds.persistence.repositories.TransactionRepository;
 import tech.finaya.wallet.adapter.outbounds.persistence.repositories.WalletRepository;
 import tech.finaya.wallet.domain.exceptions.WalletDoesntExistException;
+import tech.finaya.wallet.domain.models.Transaction;
 import tech.finaya.wallet.domain.models.Wallet;
 
 @Service
@@ -39,7 +40,9 @@ public class MakeWithdraw {
             return wallet;
         }
 
-        wallet.withdraw(idempotencyKey, request.amount());        
+        Transaction transaction = wallet.withdraw(idempotencyKey, request.amount());        
+
+        transactionRepository.save(transaction);
 
         return walletRepository.save(wallet);
     }

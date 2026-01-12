@@ -42,10 +42,10 @@ public class Wallet {
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Key> keys = new HashSet<>();
 
-    @OneToMany(mappedBy = "fromWallet", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "fromWallet", orphanRemoval = true)
     private Set<Transaction> fromWalletTransactions = new HashSet<>();
 
-    @OneToMany(mappedBy = "toWallet", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "toWallet", orphanRemoval = true)
     private Set<Transaction> toWalletTransactions = new HashSet<>();
     
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -105,7 +105,7 @@ public class Wallet {
 
         this.balance = this.balance.add(amount);
 
-        Transaction transaction = Transaction.create(idempotencyKey, this, amount, TransactionType.DEPOSIT);
+        Transaction transaction = Transaction.create(idempotencyKey, null, this, amount, TransactionType.DEPOSIT);
         transaction.confirm();
 
         this.toWalletTransactions.add(transaction);
@@ -123,12 +123,46 @@ public class Wallet {
 
         this.balance = this.balance.subtract(amount);
 
-        Transaction transaction = Transaction.create(idempotencyKey, this, amount, TransactionType.WITHDRAW);
+        Transaction transaction = Transaction.create(idempotencyKey, this, null, amount, TransactionType.WITHDRAW);
         transaction.confirm();
         
         this.fromWalletTransactions.add(transaction);
 
         createBalanceHistory(transaction, amount, balanceBefore);
+
+        return transaction;
+    }
+
+    public Transaction makePixTo(String idempotencyKey, Wallet toWallet, BigDecimal amount) {
+        // === OPERACAO NA PRIMEIRA CARTEIRA ===
+
+        validateAmount(amount);
+        validateAmountForWithdraw(amount);
+
+        BigDecimal balanceBefore = this.getBalance();
+
+        this.balance = this.balance.subtract(amount);
+
+        // === OPERACAO NA SEGUNDA CARTEIRA ===
+
+        toWallet.validateAmount(amount);
+
+        BigDecimal toWalletBalanceBefore = toWallet.getBalance();
+
+        toWallet.balance = toWallet.balance.add(amount);
+
+        // === CRIACAO DE APENAS 1 TRANSACAO ===
+
+        Transaction transaction = Transaction.create(idempotencyKey, this, toWallet, amount, TransactionType.PIX);
+        transaction.confirm();
+
+        this.fromWalletTransactions.add(transaction);
+        toWallet.toWalletTransactions.add(transaction);
+
+        // === CRIACAO DE 2 REGISTROS NO LEDGER ===
+
+        this.createBalanceHistory(transaction, amount, balanceBefore);
+        toWallet.createBalanceHistory(transaction, amount, toWalletBalanceBefore);
 
         return transaction;
     }
@@ -141,11 +175,6 @@ public class Wallet {
         }
     }
 
-    private void createBalanceHistory(Transaction transaction, BigDecimal amount, BigDecimal balanceBefore) {
-        BalanceHistory balanceHistory = BalanceHistory.create(this, transaction, amount, balanceBefore, this.balance);
-        this.balanceHistory.add(balanceHistory);
-    }
-
     private void validateAmount(BigDecimal amount) {
         if (amount == null) {
             throw new AmountIsInvalidException(String.format("Amount [%s] cannot be null", amount));
@@ -154,6 +183,11 @@ public class Wallet {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new AmountIsInvalidException(String.format("Amount [%s] must be greater than zero", amount));
         }
+    }
+
+    private void createBalanceHistory(Transaction transaction, BigDecimal amount, BigDecimal balanceBefore) {
+        BalanceHistory balanceHistory = BalanceHistory.create(this, transaction, amount, balanceBefore, this.balance);
+        this.balanceHistory.add(balanceHistory);
     }
 
 }

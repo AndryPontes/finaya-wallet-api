@@ -142,16 +142,19 @@ public class Transaction {
         state.reject(this);
     }
 
-    protected static Transaction create(String idempotencyKey, Wallet wallet, BigDecimal amount, TransactionType type) {
+    protected static Transaction create(String idempotencyKey, Wallet fromWallet, Wallet toWallet, BigDecimal amount, TransactionType type) {
         TransactionBuilder builder = new TransactionBuilder()
             .type(type)
             .amount(amount)
             .idempotencyKey(idempotencyKey);
 
         if (type == TransactionType.WITHDRAW) {
-            builder.fromWallet(wallet);
-        } else {
-            builder.toWallet(wallet);
+            builder.fromWallet(fromWallet);
+        } else if (type == TransactionType.DEPOSIT) {
+            builder.toWallet(toWallet);
+        } else if (type == TransactionType.PIX) {
+            builder.fromWallet(fromWallet);
+            builder.toWallet(toWallet);
         }
 
         return builder.build();
