@@ -1,28 +1,14 @@
-package tech.finaya.wallet.integration;
+package tech.finaya.wallet.integration.adapter.inbounds.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import tech.finaya.wallet.adapter.inbounds.dto.requests.CreateUserRequest;
 import tech.finaya.wallet.adapter.inbounds.dto.responses.CreateUserResponse;
+import tech.finaya.wallet.integration.BaseIT;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class UserControllerIT {
-
-    @LocalServerPort
-    private int port;
-
-    @Autowired
-    private WebTestClient webTestClient;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+class UserControllerIT extends BaseIT {
 
     @Test
     void createUser_shouldReturnCreatedUserResponse() throws Exception {

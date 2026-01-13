@@ -1,30 +1,16 @@
-package tech.finaya.wallet.integration.internal;
+package tech.finaya.wallet.integration.adapter.inbounds.controllers.internal;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.WebTestClient;
-
 import tech.finaya.wallet.adapter.inbounds.dto.requests.CreateUserRequest;
 import tech.finaya.wallet.adapter.inbounds.dto.responses.UserResponse;
-import tech.finaya.wallet.domain.usecases.CreateUser;
+import tech.finaya.wallet.integration.BaseIT;
+
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class AdminControllerIT {
-
-    @LocalServerPort
-    private int port;
-
-    @Autowired
-    private WebTestClient webTestClient;
-
-    @Autowired
-    private CreateUser createUser;
+class AdminControllerIT extends BaseIT {
 
     @Test
     void findAllUsers_shouldReturnAllUsers() {

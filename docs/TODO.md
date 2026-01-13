@@ -15,16 +15,16 @@
 
 - [x] Missão crítica: evite inconsistências; efeito exactly-once no débito.​
 - [x] Rastreabilidade/Auditoria: trilha completa de operações (ledger/eventos).​
-- [ ] Concorrência: o sistema deve resistir a requisições simultâneas do mesmo Pix.​
+- [x] Concorrência: o sistema deve resistir a requisições simultâneas do mesmo Pix.​
 - [x] Idempotência​
-- [ ] Observabilidade: logs estruturados e métricas mínimas.​​
+- [x] Observabilidade: logs estruturados e métricas mínimas.​​
 
 ### Cenários-Chave (Concorrência & Race)
 
 - [x] Duplo disparo: duas requisições simultâneas de transferência Pix com mesmo Idempotency-Key e/ou mesmo endToEndId ⇒ um único débito efetivo.​
-- [ ] Webhook duplicado: vários POST /pix/webhook com mesmo eventId ⇒ aplicar uma vez.​
+- [x] Webhook duplicado: vários POST /pix/webhook com mesmo eventId ⇒ aplicar uma vez.​
 - [x] Ordem trocada: REJECTED chegando antes de CONFIRMED ⇒ respeitar máquina de estados e manter consistência.​
-- [ ] Reprocesso: reexecutar o processamento do mesmo evento (simulate “at least once”) sem mudar o saldo final.​
+- [x] Reprocesso: reexecutar o processamento do mesmo evento (simulate “at least once”) sem mudar o saldo final.​
 
 ### Sugestão de Endpoints (contratos simples)
 
@@ -46,24 +46,24 @@
 
 ### Entregáveis (GitHub)
 
-- [ ] Implementação do microserviço.​
-- [ ] Instruções para instalar, testar e executar (README claro; Docker Compose do Postgres opcional).​
+- [x] Implementação do microserviço.​
+- [x] Instruções para instalar, testar e executar (README claro; Docker Compose do Postgres opcional).​
 - [ ] Explicação das decisões de design e como atendem aos requisitos (funcionais e não-funcionais).​
 - [ ] Explicação de trade-offs/compromissos por limite de tempo.​
-- [ ] Testes unitários e testes integrados​
+- [x] Testes unitários e testes integrados​
 
 ### Critérios de Avaliação (alto nível)
 
 - [x] Corretude & Consistência (efeito único, estados válidos, ledger fechando).​
 - [x] Concorrência & Falhas (prevenção de corrida, idempotência demonstrada).​
 - [x] Qualidade de Arquitetura & Código (Clean Architecture, coesão, clareza).​
-- [ ] Observabilidade & Auditabilidade (logs/metrics e trilha de eventos).​
+- [x] Observabilidade & Auditabilidade (logs/metrics e trilha de eventos).​
 - [x] Documentação & Execução (README, como subir/rodar/testar).​
 
 ### Pistas Técnicas (opcionais, escolha sua abordagem)
 
 - [x] Idempotência: tabela idempotency(scope,key) com unique; retornar o mesmo resultado ao detectar repetição.​
 - [x] Race condition: optimistic locking (version) ou pessimista (SELECT FOR UPDATE) em saldo/ledger; retries curtos.​
-- [ ] Ledger: entradas imutáveis (+/−) vinculadas ao endToEndId; saldo derivado ou mantido com locking.​
+- [x] Ledger: entradas imutáveis (+/−) vinculadas ao endToEndId; saldo derivado ou mantido com locking.​
 - [x] Máquina de estados: PENDING → CONFIRMED → (SETTLED opcional) ou PENDING → REJECTED.​
 - [x] Observabilidade: log com endToEndId, eventId, idempotencyKey.

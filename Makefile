@@ -10,8 +10,11 @@ down:
 	@echo "Stopping app, postgresql and pgadmin..."
 	docker compose down
 
-test:
+unit-test:
 	./gradlew test
 
 integration-test:
 	./gradlew integrationTest
+
+make all-tests-with-report:
+	./gradlew clean test integrationTest jacocoTestReport

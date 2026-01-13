@@ -20,23 +20,28 @@ src/
          ├─ adapter/
          │   ├─ inbounds/
          │   │   ├─ controllers/               # Controllers
+         │   │   │   ├─ api/                   # API contracts
+         │   │   │   └─ internal/              # Internal controllers
          │   │   ├─ dto/
          │   │   │   ├─ requests/              # Request DTOs
          │   │   │   └─ responses/             # Response DTOs
          │   └─ outbounds/
          │       ├─ persistence/
-         │       │   ├─ adapters/               # Persistence adapters
-         │       │   ├─ jpa/                    # JPA/Hibernate implementations
-         │       │   └─ repositories/           # Repository interfaces (Ports)
-         ├─ config/                               # Spring configuration
+         │       │   ├─ adapters/              # Persistence adapters
+         │       │   ├─ jpa/                   # JPA/Hibernate implementations
+         │       │   └─ repositories/          # Repository interfaces (Ports)
+         ├─ config/                            # Spring configuration
          ├─ domain/
-         │   ├─ models/                           # Domain entities (User, Order, …)
-         │   ├─ models/
-         │   │   └─ enums/                        # Enums used in the domain
-         │   └─ models/
-         │       └─ factories/                    # Domain object factories
+         │   ├─ exceptions/                    # Domain exceptions                   
+         │   ├─ models/                        # Domain entities
+         │   │   ├─ builders/                  # Builders
+         │   │   ├─ factories/                 # Domain object factories
+         │   │   ├─ webhook/                   # Domain webhook
+         │   │   └─ enums/                     # Enums used in the domain
+         │   └─ usecases/                      # Use cases
          └─ infrastructure/
-             └─ mappers/                         # Mapping classes (DTO ↔ Entity)
+             ├─ exceptions/                    # Infrastructure exceptions
+             └─ mappers/                       # Mapping classes (DTO ↔ Entity)
 ```
 ## MER
 
@@ -56,21 +61,33 @@ src/
 
 * Use `docker compose down` to stop all services.
 
-## How to run unit tests?
+## How to run tests?
+
+### Unit
 
 *Linux and MAC:*
-1. Open a terminal in the application's root directory and run: `make test`.
+1. Open a terminal in the application's root directory and run: `make unit-test`.
 
 *Windows:*
 1. Open a terminal in the application's root directory and run: `./gradlew test`.
 
-## How to run integration tests?
+### Integration
 
 *Linux and MAC:*
 1. Open a terminal in the application's root directory and run: `make integration-test`.
 
 *Windows:*
 1. Open a terminal in the application's root directory and run: `./gradlew integrationTest`.
+
+### All tests and report
+
+*Linux and MAC:*
+1. Open a terminal in the application's root directory and run: `make all-tests-with-report`.
+2. Open the [report](./build/jacocoHtml/index.html).
+
+*Windows:*
+1. Open a terminal in the application's root directory and run: `./gradlew clean test integrationTest jacocoTestReport`.
+2. Open the [report](./build/jacocoHtml/index.html).
 
 ## Links
 
