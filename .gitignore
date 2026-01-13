@@ -32,4 +32,5 @@ out/
 
 .vscode/
 
-.env
+# retirado para teste local
+# .env
