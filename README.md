@@ -98,3 +98,7 @@ src/
 [Swagger](http://localhost:8080/swagger-ui.html)
 
 [TODO](./docs/TODO.md)
+
+[Code Design](./docs/code-design.md)
+
+[Trade-Offs](./docs/trade-offs.md)

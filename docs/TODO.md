@@ -48,8 +48,8 @@
 
 - [x] Implementação do microserviço.​
 - [x] Instruções para instalar, testar e executar (README claro; Docker Compose do Postgres opcional).​
-- [ ] Explicação das decisões de design e como atendem aos requisitos (funcionais e não-funcionais).​
-- [ ] Explicação de trade-offs/compromissos por limite de tempo.​
+- [x] Explicação das decisões de design e como atendem aos requisitos (funcionais e não-funcionais).​
+- [x] Explicação de trade-offs/compromissos por limite de tempo.​
 - [x] Testes unitários e testes integrados​
 
 ### Critérios de Avaliação (alto nível)
