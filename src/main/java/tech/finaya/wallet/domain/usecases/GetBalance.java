@@ -31,6 +31,7 @@ public class GetBalance {
         return wallet.getBalance();
     }
 
+    @Transactional
     public BigDecimal executeAt(UUID walletId, LocalDateTime at) {
         return balanceHistoryRepository
             .findLastBalanceAfter(walletId, at)

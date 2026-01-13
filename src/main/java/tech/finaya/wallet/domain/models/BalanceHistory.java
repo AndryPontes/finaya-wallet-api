@@ -63,4 +63,24 @@ public class BalanceHistory {
         this.balanceBefore = balanceBefore;
     }
 
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public Transaction getTransaction() {
+        return transaction;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public BigDecimal getBalanceAfter() {
+        return balanceAfter;
+    }
+
+    public BigDecimal getBalanceBefore() {
+        return balanceBefore;
+    }
+
 }

@@ -34,5 +34,12 @@ dependencies {
 }
 
 tasks.withType<Test> {
-	useJUnitPlatform()
+    useJUnitPlatform()
+    include("**/*Test.class")
+}
+
+val integrationTest = tasks.register<Test>("integrationTest") {
+    useJUnitPlatform()
+    include("**/*IT.class")
+    shouldRunAfter(tasks.test)
 }

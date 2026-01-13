@@ -56,6 +56,22 @@ src/
 
 * Use `docker compose down` to stop all services.
 
+## How to run unit tests?
+
+*Linux and MAC:*
+1. Open a terminal in the application's root directory and run: `make test`.
+
+*Windows:*
+1. Open a terminal in the application's root directory and run: `./gradlew test`.
+
+## How to run integration tests?
+
+*Linux and MAC:*
+1. Open a terminal in the application's root directory and run: `make integration-test`.
+
+*Windows:*
+1. Open a terminal in the application's root directory and run: `./gradlew integrationTest`.
+
 ## Links
 
 [Health](http://localhost:8080/actuator/health)

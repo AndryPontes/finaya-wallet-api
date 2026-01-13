@@ -73,4 +73,12 @@ public class User {
         return isActive;
     }
 
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
 }

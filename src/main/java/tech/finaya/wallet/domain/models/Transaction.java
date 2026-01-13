@@ -2,7 +2,6 @@ package tech.finaya.wallet.domain.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -62,10 +61,17 @@ public class Transaction {
 
     public Transaction() {}
 
+    public Transaction(String endToEndId, String idempotencyKey, BigDecimal amount, TransactionStatus status) {
+        this.endToEndId = endToEndId;
+        this.idempotencyKey = idempotencyKey;
+        this.amount = amount;
+        this.status = status;
+    }
+
     // Toda vez que o objeto for carregado ou persistido no banco esse metodo sera disparado atualizando o state
     @PostLoad
     @PostPersist
-    private void initState() {
+    public void initState() {
         this.state = TransactionStateFactory.build(this.status);
     }
 
@@ -99,6 +105,14 @@ public class Transaction {
 
     public TransactionStatus getStatus() {
         return status;
+    }
+
+    public TransactionType getType() {
+        return type;
+    }
+
+     public TransactionState getState() {
+        return state;
     }
 
     public void setState(TransactionState state) {

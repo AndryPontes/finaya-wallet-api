@@ -9,3 +9,9 @@ up:
 down:
 	@echo "Stopping app, postgresql and pgadmin..."
 	docker compose down
+
+test:
+	./gradlew test
+
+integration-test:
+	./gradlew integrationTest

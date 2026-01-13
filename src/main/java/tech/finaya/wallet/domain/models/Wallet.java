@@ -57,10 +57,14 @@ public class Wallet {
     @Column(name = "version", nullable = false)
     private Long version;
 
-    protected Wallet() {}
+    public Wallet() {}
 
     public Wallet(User user) {
         this.user = user;
+    }
+
+    public Wallet(UUID walletId) {
+        this.walletId = walletId;
     }
 
     public Long getId() {
@@ -79,6 +83,10 @@ public class Wallet {
         return balance;
     }
 
+    public BigDecimal getLockedBalance() {
+        return lockedBalance;
+    }
+
     public Set<Key> getKeys() {
         return keys;
     }
@@ -89,6 +97,10 @@ public class Wallet {
 
     public Set<Transaction> getToWalletTransactions() {
         return toWalletTransactions;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     public void addFromWalletTransactions(Transaction transaction) {
