@@ -16,13 +16,18 @@ public class UserRepositoryAdapter implements UserRepository {
     private UserJpaRepository repository;
 
     @Override
-    public User create(User user) {
+    public User save(User user) {
         return repository.saveAndFlush(user);
     }
 
     @Override
     public List<User> FindAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public boolean existsByCpf(String cpf) {
+        return repository.existsByCpf(cpf);
     }
 
 }

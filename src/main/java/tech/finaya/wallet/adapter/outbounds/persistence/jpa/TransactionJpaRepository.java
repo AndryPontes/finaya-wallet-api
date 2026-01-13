@@ -12,4 +12,6 @@ public interface TransactionJpaRepository extends JpaRepository<Transaction, Lon
 
     Optional<Transaction> findByIdempotencyKey(String idempotencyKey);
 
+    Optional<Transaction> findByEndToEndId(String endToEndId);
+
 }

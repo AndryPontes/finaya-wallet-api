@@ -17,7 +17,7 @@ public final class TransactionStateFactory {
             case REJECTED:
                 return new RejectedState();
             default:
-                throw new IllegalArgumentException(String.format("Estado inválido: %s", status));
+                throw new IllegalArgumentException(String.format("Invalid state: %s", status));
         }
     }
 }

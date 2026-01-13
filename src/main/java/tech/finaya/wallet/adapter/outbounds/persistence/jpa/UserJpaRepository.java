@@ -14,4 +14,6 @@ public interface UserJpaRepository extends JpaRepository<User, Long> {
     @EntityGraph(attributePaths = {"wallet", "wallet.keys", "wallet.fromWalletTransactions", "wallet.toWalletTransactions"})
     List<User> findAll();
 
+    boolean existsByCpf(String cpf);
+
 }

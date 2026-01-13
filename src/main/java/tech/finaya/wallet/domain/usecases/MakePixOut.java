@@ -10,7 +10,7 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import tech.finaya.wallet.adapter.inbounds.dto.requests.PixIntraRequest;
+import tech.finaya.wallet.adapter.inbounds.dto.requests.PixOutRequest;
 import tech.finaya.wallet.adapter.outbounds.persistence.repositories.TransactionRepository;
 import tech.finaya.wallet.adapter.outbounds.persistence.repositories.WalletRepository;
 import tech.finaya.wallet.domain.exceptions.PixKeyDoesntExistException;
@@ -22,7 +22,7 @@ import tech.finaya.wallet.domain.models.factories.BalanceHistoryFactory;
 import tech.finaya.wallet.domain.models.factories.TransactionFactory;
 
 @Service
-public class MakePix {
+public class MakePixOut {
     
     @Autowired
     public WalletRepository walletRepository;
@@ -36,14 +36,10 @@ public class MakePix {
         backoff = @Backoff(delay = 100)
     )
     @Transactional
-    public Transaction execute(String idempotencyKey, PixIntraRequest request) {
+    public Transaction execute(String idempotencyKey, PixOutRequest request) {
         Wallet fromWallet = walletRepository
             .findByKey(request.fromPixKey())
             .orElseThrow(() -> new PixKeyDoesntExistException(request.fromPixKey()));
-
-        Wallet toWallet = walletRepository
-            .findByKey(request.toPixKey())
-            .orElseThrow(() -> new PixKeyDoesntExistException(request.toPixKey()));
 
         Optional<Transaction> existingTransaction = transactionRepository.findByIdempotencyKey(idempotencyKey);
 
@@ -52,42 +48,34 @@ public class MakePix {
         }
 
         BigDecimal fromWalletBalanceBefore = fromWallet.getBalance();
-        BigDecimal toWalletBalanceBefore = toWallet.getBalance();
 
-        fromWallet.withdraw(request.amount());
-        toWallet.deposit(request.amount());
+        fromWallet.lockBalance(request.amount());
 
-        Transaction transaction = createTransaction(idempotencyKey, request, fromWallet, toWallet);
-        createBalanceHistory(request, fromWallet, toWallet, fromWalletBalanceBefore, toWalletBalanceBefore, transaction);
+        // TODO: integra com BACEN
+
+        Transaction transaction = createTransaction(idempotencyKey, request, fromWallet);
+        createBalanceHistory(request, fromWallet, fromWalletBalanceBefore, transaction);
 
         Transaction transactionSaved = transactionRepository.save(transaction);
 
         walletRepository.save(fromWallet);
-        walletRepository.save(toWallet);
 
         return transactionSaved;
     }
 
     private void createBalanceHistory(
-        PixIntraRequest request, 
+        PixOutRequest request, 
         Wallet fromWallet, 
-        Wallet toWallet,
         BigDecimal fromWalletBalanceBefore, 
-        BigDecimal toWalletBalanceBefore, 
         Transaction transaction
     ) {
         BalanceHistory fromWalletBalanceHistory = BalanceHistoryFactory.build(fromWallet, transaction, request.amount(), fromWalletBalanceBefore);
         fromWallet.addBalanceHistory(fromWalletBalanceHistory);
-
-        BalanceHistory toWalletBalanceHistory = BalanceHistoryFactory.build(toWallet, transaction, request.amount(), toWalletBalanceBefore);
-        toWallet.addBalanceHistory(toWalletBalanceHistory);
     }
 
-    private Transaction createTransaction(String idempotencyKey, PixIntraRequest request, Wallet fromWallet, Wallet toWallet) {
-        Transaction transaction = TransactionFactory.build(TransactionType.PIX, request.amount(), idempotencyKey, fromWallet, toWallet);
-        transaction.confirm();
+    private Transaction createTransaction(String idempotencyKey, PixOutRequest request, Wallet fromWallet) {
+        Transaction transaction = TransactionFactory.build(TransactionType.PIX, request.amount(), idempotencyKey, fromWallet, null);
         fromWallet.addFromWalletTransactions(transaction);
-        toWallet.addToWalletTransactions(transaction);
 
         return transaction;
     }

@@ -21,6 +21,11 @@ public class TransactionRepositoryAdapter implements TransactionRepository {
     }
 
     @Override
+    public Optional<Transaction> findByEndToEndId(String endToEndId) {
+        return repository.findByEndToEndId(endToEndId);
+    }
+
+    @Override
     public Transaction save(Transaction transaction) {
         return repository.save(transaction);
     }

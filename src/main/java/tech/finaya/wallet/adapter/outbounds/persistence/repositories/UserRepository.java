@@ -6,8 +6,10 @@ import tech.finaya.wallet.domain.models.User;
 
 public interface UserRepository {
 
-    User create(User user);
+    User save(User user);
     
     List<User> FindAll();
+
+    boolean existsByCpf(String cpf);
 
 }

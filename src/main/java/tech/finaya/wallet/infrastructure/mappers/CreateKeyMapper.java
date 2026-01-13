@@ -6,7 +6,7 @@ import tech.finaya.wallet.adapter.inbounds.dto.requests.CreateKeyRequest;
 import tech.finaya.wallet.adapter.inbounds.dto.responses.CreateKeyResponse;
 import tech.finaya.wallet.domain.models.Key;
 import tech.finaya.wallet.domain.models.enums.KeyType;
-import tech.finaya.wallet.infrastructure.exceptions.KeyTypeInvalidException;
+import tech.finaya.wallet.infrastructure.exceptions.KeyTypeIsInvalidException;
 
 public class CreateKeyMapper {
     
@@ -15,7 +15,7 @@ public class CreateKeyMapper {
         try {
             return new Key(KeyType.valueOf(request.type().toUpperCase()), request.value());
         } catch (IllegalArgumentException ex) {
-            throw new KeyTypeInvalidException(request.type());
+            throw new KeyTypeIsInvalidException(request.type());
         }
     }
 

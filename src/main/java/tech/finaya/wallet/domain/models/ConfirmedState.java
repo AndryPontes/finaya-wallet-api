@@ -4,12 +4,14 @@ public class ConfirmedState implements TransactionState {
 
     @Override
     public void confirm(Transaction transaction) throws IllegalArgumentException {
-        throw new IllegalStateException("A transação já foi confirmada...");
+        // ignorando por ser idempotente
+        // throw new IllegalStateException("The transaction has already been confirmed.");
     }
 
     @Override
     public void reject(Transaction transaction) throws IllegalArgumentException {
-        throw new IllegalStateException("A transação já foi confirmada...");
+        // ignorando por ser idempotente
+        // throw new IllegalStateException("The transaction has already been confirmed.");
     }
     
 }

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import tech.finaya.wallet.adapter.inbounds.dto.requests.CreateUserRequest;
 import tech.finaya.wallet.adapter.outbounds.persistence.repositories.UserRepository;
+import tech.finaya.wallet.domain.exceptions.UserAlreadyExistException;
 import tech.finaya.wallet.domain.models.User;
 import tech.finaya.wallet.infrastructure.mappers.CreateUserMapper;
 
@@ -17,9 +18,13 @@ public class CreateUser {
 
     @Transactional
     public User execute(CreateUserRequest request) {
+        if (repository.existsByCpf(request.cpf())) {
+            throw new UserAlreadyExistException(request.cpf());
+        }
+
         User user = CreateUserMapper.toEntity(request);
         
-        return repository.create(user);
+        return repository.save(user);
     }
 
 }

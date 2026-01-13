@@ -35,8 +35,11 @@ public class Wallet {
     @JoinColumn(name = "user_id", referencedColumnName = "id", unique = true)
     private User user;
 
-    @Column(nullable = false, precision = 20, scale = 2)
+    @Column(name = "balance", nullable = false, precision = 20, scale = 2)
     private BigDecimal balance = BigDecimal.ZERO;
+
+    @Column(name = "locked_balance", nullable = false, precision = 20, scale = 2)
+    private BigDecimal lockedBalance = BigDecimal.ZERO;
 
     @OneToMany(mappedBy = "wallet", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Key> keys = new HashSet<>();
@@ -122,10 +125,41 @@ public class Wallet {
         this.balance = this.balance.subtract(amount);
     }
 
+    public void lockBalance(BigDecimal amount) {
+        validateAmount(amount);
+        validateAmountForWithdraw(amount);
+
+        this.lockedBalance = this.lockedBalance.add(amount);
+        this.balance = this.balance.subtract(amount);
+    }
+
+    public void confirmLockedBalance(BigDecimal amount) {
+        validateAmount(amount);
+        validateLockedAmountForWithdraw(amount);
+
+        this.lockedBalance = this.lockedBalance.subtract(amount);
+    }
+
+    public void rejectLockedBalance(BigDecimal amount) {
+        validateAmount(amount);
+        validateLockedAmountForWithdraw(amount);
+
+        this.lockedBalance = this.lockedBalance.subtract(amount);
+        this.balance = this.balance.add(amount);
+    }
+    
     private void validateAmountForWithdraw(BigDecimal amount) {
         if (this.balance.compareTo(amount) < 0) {
             throw new InsufficientBalanceException(
                 String.format("Insufficient balance: balance [%s], withdrawal [%s]", this.balance, amount)
+            );
+        }
+    }
+
+    private void validateLockedAmountForWithdraw(BigDecimal amount) {
+        if (this.lockedBalance.compareTo(amount) < 0) {
+            throw new InsufficientBalanceException(
+                String.format("Insufficient locked balance: locked balance [%s], withdrawal [%s]", this.lockedBalance, amount)
             );
         }
     }
